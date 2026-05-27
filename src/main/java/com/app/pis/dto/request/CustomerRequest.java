@@ -5,18 +5,22 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record SupplierRequest(
-        @NotBlank(message = "Supplier name is required")
+public record CustomerRequest(
+        @NotBlank(message = "Full name is required")
         @Size(max = 100)
-        String name,
-        
-        @Email(message = "Invalid email format")
-        String email,
-        
+        String fullName,
+
+        String year,
+
         @NotBlank(message = "Phone is required")
         @Pattern(regexp = "^(0[0-9]{9,10})$", message = "Phone must be valid Vietnamese format")
         String phone,
-        
-        String address
+
+        @Email(message = "Invalid email format")
+        @Size(max = 100)
+        String email,
+
+        String status,
+        Integer customerGroupId
 ) {
 }

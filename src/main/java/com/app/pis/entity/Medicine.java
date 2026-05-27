@@ -43,5 +43,8 @@ public class Medicine {
     @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
     private List<MedicineUnit> medicineUnits;
 
+    @Column(name = "status", length = 20)
+    private String status;
+
 
 }

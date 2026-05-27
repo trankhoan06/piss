@@ -32,7 +32,7 @@ public class Invoice {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
-
-
+    @Column(name = "status", length = 20)
+    private String status;
 
 }

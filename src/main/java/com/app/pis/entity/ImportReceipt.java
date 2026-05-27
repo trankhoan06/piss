@@ -31,4 +31,7 @@ public class ImportReceipt {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "importReceipt")
     private List<ImportReceiptDetail> importReceiptDetails;
+
+    @Column(name = "type", length = 20)
+    private String type;
 }
