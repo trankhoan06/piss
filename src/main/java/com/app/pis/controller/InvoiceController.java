@@ -20,12 +20,13 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @GetMapping
-    public ResponseEntity<?> getAllInvoices() {
-        List<InvoiceResponse> invoices = invoiceService.getAllInvoices();
+    public ResponseEntity<?> getAllInvoices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),
                 "successfully",
-                invoices
+                invoiceService.getAllInvoices(page, size)
         ));
     }
 
@@ -35,6 +36,16 @@ public class InvoiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(
                 HttpStatus.CREATED.value(),
                 "Invoice created successfully",
+                responseData
+        ));
+    }
+
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<?> acceptInvoice(@PathVariable Integer id) {
+        InvoiceResponse responseData = invoiceService.acceptInvoice(id);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Invoice accepted successfully",
                 responseData
         ));
     }

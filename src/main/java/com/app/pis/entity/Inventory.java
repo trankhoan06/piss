@@ -36,4 +36,31 @@ public class Inventory {
 
 
 
+
+
+
+    public Inventory() {}
+    public Inventory(Long id, BigDecimal importPrice, LocalDate expirationDate, String batchNumber, Integer stockQuantity, Medicine medicine, Supplier supplier) {
+        this.id = id;
+        this.importPrice = importPrice;
+        this.expirationDate = expirationDate;
+        this.batchNumber = batchNumber;
+        this.stockQuantity = stockQuantity;
+        this.medicine = medicine;
+        this.supplier = supplier;
+    }
+    public Long getId() { return this.id; }
+    public void setId(Long id) { this.id = id; }
+    public BigDecimal getImportPrice() { return this.importPrice; }
+    public void setImportPrice(BigDecimal importPrice) { this.importPrice = importPrice; }
+    public LocalDate getExpirationDate() { return this.expirationDate; }
+    public void setExpirationDate(LocalDate expirationDate) { this.expirationDate = expirationDate; }
+    public String getBatchNumber() { return this.batchNumber; }
+    public void setBatchNumber(String batchNumber) { this.batchNumber = batchNumber; }
+    public Integer getStockQuantity() { return this.stockQuantity; }
+    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
+    public Medicine getMedicine() { return this.medicine; }
+    public void setMedicine(Medicine medicine) { this.medicine = medicine; }
+    public Supplier getSupplier() { return this.supplier; }
+    public void setSupplier(Supplier supplier) { this.supplier = supplier; }
 }

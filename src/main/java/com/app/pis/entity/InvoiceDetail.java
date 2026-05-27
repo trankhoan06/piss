@@ -31,4 +31,23 @@ public class InvoiceDetail {
 
 
 
+
+    public InvoiceDetail() {}
+    public InvoiceDetail(Integer id, Medicine medicine, BigDecimal totalAmound, Integer quantity, Invoice invoice) {
+        this.id = id;
+        this.medicine = medicine;
+        this.totalAmound = totalAmound;
+        this.quantity = quantity;
+        this.invoice = invoice;
+    }
+    public Integer getId() { return this.id; }
+    public void setId(Integer id) { this.id = id; }
+    public Medicine getMedicine() { return this.medicine; }
+    public void setMedicine(Medicine medicine) { this.medicine = medicine; }
+    public BigDecimal getTotalAmound() { return this.totalAmound; }
+    public void setTotalAmound(BigDecimal totalAmound) { this.totalAmound = totalAmound; }
+    public Integer getQuantity() { return this.quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public Invoice getInvoice() { return this.invoice; }
+    public void setInvoice(Invoice invoice) { this.invoice = invoice; }
 }

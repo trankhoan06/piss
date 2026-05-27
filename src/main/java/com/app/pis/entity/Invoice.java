@@ -35,4 +35,31 @@ public class Invoice {
     @Column(name = "status", length = 20)
     private String status;
 
+
+
+
+    public Invoice() {}
+    public Invoice(Integer id, LocalDateTime saleDate, BigDecimal totalAmound, User user, List<InvoiceDetail> invoiceDetails, Customer customer, String status) {
+        this.id = id;
+        this.saleDate = saleDate;
+        this.totalAmound = totalAmound;
+        this.user = user;
+        this.invoiceDetails = invoiceDetails;
+        this.customer = customer;
+        this.status = status;
+    }
+    public Integer getId() { return this.id; }
+    public void setId(Integer id) { this.id = id; }
+    public LocalDateTime getSaleDate() { return this.saleDate; }
+    public void setSaleDate(LocalDateTime saleDate) { this.saleDate = saleDate; }
+    public BigDecimal getTotalAmound() { return this.totalAmound; }
+    public void setTotalAmound(BigDecimal totalAmound) { this.totalAmound = totalAmound; }
+    public User getUser() { return this.user; }
+    public void setUser(User user) { this.user = user; }
+    public List<InvoiceDetail> getInvoiceDetails() { return this.invoiceDetails; }
+    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) { this.invoiceDetails = invoiceDetails; }
+    public Customer getCustomer() { return this.customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
+    public String getStatus() { return this.status; }
+    public void setStatus(String status) { this.status = status; }
 }

@@ -3,7 +3,6 @@ package com.app.pis.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
 
 import java.time.LocalDate;
 
@@ -14,13 +13,7 @@ import java.time.LocalDate;
                 @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
                 @UniqueConstraint(name = "uk_users_phone", columnNames = "phone"),
                 @UniqueConstraint(name = "uk_users_cccd", columnNames = "cccd")
-        }
 )
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,4 +57,40 @@ public class User {
     @Column(name = "first_login")
     @Builder.Default
     private Boolean firstLogin = true;
+    public User() {}
+    public User(Integer id, String firstName, String lastName, String phone, String email, LocalDate birthDay, String cccd, String status, String address, String password, String role) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.birthDay = birthDay;
+        this.cccd = cccd;
+        this.status = status;
+        this.address = address;
+        this.password = password;
+        this.role = role;
+    }
+    public Integer getId() { return this.id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getFirstName() { return this.firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getLastName() { return this.lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getPhone() { return this.phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getEmail() { return this.email; }
+    public void setEmail(String email) { this.email = email; }
+    public LocalDate getBirthDay() { return this.birthDay; }
+    public void setBirthDay(LocalDate birthDay) { this.birthDay = birthDay; }
+    public String getCccd() { return this.cccd; }
+    public void setCccd(String cccd) { this.cccd = cccd; }
+    public String getStatus() { return this.status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getAddress() { return this.address; }
+    public void setAddress(String address) { this.address = address; }
+    public String getPassword() { return this.password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getRole() { return this.role; }
+    public void setRole(String role) { this.role = role; }
 }

@@ -31,54 +31,43 @@ public class ForgotPasswordOtp {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
 
-    public ForgotPasswordOtp() {
-    }
 
-    public Integer getId() {
         return id;
-    }
 
-    public String getEmail() {
         return email;
-    }
 
-    public String getOtp() {
         return otp;
-    }
 
-    public Date getExpiredAt() {
         return expiredAt;
-    }
 
-    public Boolean getUsed() {
         return used;
-    }
 
-    public Date getCreatedAt() {
         return createdAt;
-    }
 
-    public void setId(Integer id) {
         this.id = id;
-    }
 
-    public void setEmail(String email) {
         this.email = email;
-    }
 
-    public void setOtp(String otp) {
         this.otp = otp;
-    }
 
-    public void setExpiredAt(Date expiredAt) {
+        this.expiredAt = expiredAt;
+
+        this.used = used;
+
+        this.createdAt = createdAt;
+    public ForgotPasswordOtp() {}
+    public ForgotPasswordOtp(Integer id, String email, String otp, Date expiredAt) {
+        this.id = id;
+        this.email = email;
+        this.otp = otp;
         this.expiredAt = expiredAt;
     }
-
-    public void setUsed(Boolean used) {
-        this.used = used;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
+    public Integer getId() { return this.id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getEmail() { return this.email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getOtp() { return this.otp; }
+    public void setOtp(String otp) { this.otp = otp; }
+    public Date getExpiredAt() { return this.expiredAt; }
+    public void setExpiredAt(Date expiredAt) { this.expiredAt = expiredAt; }
 }

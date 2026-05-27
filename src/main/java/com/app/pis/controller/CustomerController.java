@@ -20,13 +20,11 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCustomers() {
-        List<CustomerResponse> customers = customerService.getAllCustomers();
-        return ResponseEntity.ok(new ApiResponse<>(
-                HttpStatus.OK.value(),
-                "successfully",
-                customers
-        ));
+    public ResponseEntity<?> getAllCustomers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String search) {
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "successfully", customerService.getAllCustomers(page, size, search)));
     }
 
     @PostMapping

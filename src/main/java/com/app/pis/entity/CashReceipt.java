@@ -1,18 +1,12 @@
 package com.app.pis.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cash_receipt")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class CashReceipt {
 
     @Id
@@ -43,4 +37,32 @@ public class CashReceipt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public CashReceipt() {}
+    public CashReceipt(Integer id, LocalDateTime receiptDate, BigDecimal amount, String type, String description, String referenceType, Integer referenceId, User user) {
+        this.id = id;
+        this.receiptDate = receiptDate;
+        this.amount = amount;
+        this.type = type;
+        this.description = description;
+        this.referenceType = referenceType;
+        this.referenceId = referenceId;
+        this.user = user;
+    }
+    public Integer getId() { return this.id; }
+    public void setId(Integer id) { this.id = id; }
+    public LocalDateTime getReceiptDate() { return this.receiptDate; }
+    public void setReceiptDate(LocalDateTime receiptDate) { this.receiptDate = receiptDate; }
+    public BigDecimal getAmount() { return this.amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
+    public String getType() { return this.type; }
+    public void setType(String type) { this.type = type; }
+    public String getDescription() { return this.description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getReferenceType() { return this.referenceType; }
+    public void setReferenceType(String referenceType) { this.referenceType = referenceType; }
+    public Integer getReferenceId() { return this.referenceId; }
+    public void setReferenceId(Integer referenceId) { this.referenceId = referenceId; }
+    public User getUser() { return this.user; }
+    public void setUser(User user) { this.user = user; }
 }

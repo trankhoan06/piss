@@ -21,8 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import com.app.pis.dto.wrap.PageResponse;
 
 @Service
 public class InvoiceService {
@@ -45,18 +49,36 @@ public class InvoiceService {
     @Autowired
     private InvoiceMapper invoiceMapper;
 
+    @Autowired
+    private com.app.pis.repository.InventoryRepository inventoryRepository;
+
+    @Autowired
+    private CashReceiptService cashReceiptService;
+
     @Transactional(readOnly = true)
-    public List<InvoiceResponse> getAllInvoices() {
-        return invoiceRepository.findAll().stream()
+    public PageResponse<InvoiceResponse> getAllInvoices(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Invoice> invoicePage = invoiceRepository.findAll(pageable);
+
+        java.util.List<InvoiceResponse> content = invoicePage.getContent().stream()
                 .map(invoiceMapper::toResponse)
                 .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                content,
+                invoicePage.getNumber(),
+                invoicePage.getSize(),
+                invoicePage.getTotalElements(),
+                invoicePage.getTotalPages(),
+                invoicePage.isLast()
+        );
     }
 
     @Transactional
     public InvoiceResponse createInvoice(InvoiceRequest request) {
         Invoice invoice = invoiceMapper.toEntity(request);
         invoice.setSaleDate(LocalDateTime.now());
-        invoice.setStatus("COMPLETED");
+        invoice.setStatus("TEMPORARY");
 
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
@@ -86,6 +108,57 @@ public class InvoiceService {
     }
 
     @Transactional
+    public InvoiceResponse acceptInvoice(Integer id) {
+        Invoice invoice = invoiceRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Invoice not found"));
+
+        if (!"TEMPORARY".equals(invoice.getStatus())) {
+            throw new BadRequestException("Only TEMPORARY invoices can be accepted");
+        }
+
+        // FIFO Inventory Deduction
+        for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
+            int remainingToDeduct = detail.getQuantity();
+            
+            List<com.app.pis.entity.Inventory> inventories = inventoryRepository
+                    .findByMedicineIdAndStockQuantityGreaterThanOrderByExpirationDateAsc(detail.getMedicine().getId(), 0);
+
+            for (com.app.pis.entity.Inventory inv : inventories) {
+                if (remainingToDeduct == 0) break;
+                
+                if (inv.getStockQuantity() >= remainingToDeduct) {
+                    inv.setStockQuantity(inv.getStockQuantity() - remainingToDeduct);
+                    remainingToDeduct = 0;
+                } else {
+                    remainingToDeduct -= inv.getStockQuantity();
+                    inv.setStockQuantity(0);
+                }
+                inventoryRepository.save(inv);
+            }
+
+            if (remainingToDeduct > 0) {
+                throw new BadRequestException("Không đủ hàng trong kho cho sản phẩm: " + detail.getMedicine().getName());
+            }
+        }
+
+        invoice.setStatus("ACCEPTED");
+        Invoice savedInvoice = invoiceRepository.save(invoice);
+
+        // Auto-create CashReceipt (INCOME)
+        com.app.pis.dto.request.CashReceiptRequest cashReceiptReq = new com.app.pis.dto.request.CashReceiptRequest(
+                invoice.getTotalAmound(),
+                "INCOME",
+                "Thu tiền hoá đơn bán hàng #" + invoice.getId(),
+                "INVOICE",
+                invoice.getId(),
+                invoice.getUser().getId()
+        );
+        cashReceiptService.create(cashReceiptReq);
+
+        return invoiceMapper.toResponse(savedInvoice);
+    }
+
+    @Transactional
     public InvoiceResponse cancelInvoice(Integer id) {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Invoice not found"));
@@ -93,6 +166,10 @@ public class InvoiceService {
         if ("CANCELLED".equals(invoice.getStatus())) {
             throw new BadRequestException("Invoice is already cancelled");
         }
+
+        // We do not implement automated inventory rollback for Invoice in this MVP
+        // Because FIFO deduction makes rollback complex (we don't know which exact batch was deducted).
+        // For a complete system, we would need to store the exact mapping in a new table (InvoiceInventoryMapping).
 
         invoice.setStatus("CANCELLED");
         return invoiceMapper.toResponse(invoiceRepository.save(invoice));

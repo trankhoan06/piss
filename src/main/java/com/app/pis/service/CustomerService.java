@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import com.app.pis.dto.wrap.PageResponse;
 
 @Service
 public class CustomerService {
@@ -29,10 +33,28 @@ public class CustomerService {
     private CustomerMapper customerMapper;
 
     @Transactional(readOnly = true)
-    public List<CustomerResponse> getAllCustomers() {
-        return customerRepository.findAll().stream()
+    public PageResponse<CustomerResponse> getAllCustomers(int page, int size, String search) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Customer> customerPage;
+        
+        if (search != null && !search.isEmpty()) {
+            customerPage = customerRepository.findByFullNameContainingIgnoreCaseOrPhoneNumberContaining(search, search, pageable);
+        } else {
+            customerPage = customerRepository.findAll(pageable);
+        }
+
+        java.util.List<CustomerResponse> content = customerPage.getContent().stream()
                 .map(customerMapper::toResponse)
                 .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                content,
+                customerPage.getNumber(),
+                customerPage.getSize(),
+                customerPage.getTotalElements(),
+                customerPage.getTotalPages(),
+                customerPage.isLast()
+        );
     }
 
     @Transactional
