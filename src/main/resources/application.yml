@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: pharma-inventory-system
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    url: ${JDBC_URL}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+
+jwt:
+  secret: 8128f2272d6413b7a5d286765a5332f0d9f9d307e34276a52868f23cc34908417c0920c5f030d86fe3d6451ee6589e13c3ea9a9eaaf1cf3a53d7b284cb771702
+  expiration: 86400000
